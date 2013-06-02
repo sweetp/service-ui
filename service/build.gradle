@@ -3,7 +3,7 @@ apply plugin: 'groovy'
 apply plugin: 'codenarc'
 
 // this should be your service name
-archivesBaseName = 'boilerplate'
+archivesBaseName = 'ui'
 version = '0.1-SNAPSHOT'
 // comment this out if you don't want codenarc
 codenarc {
