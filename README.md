@@ -1,28 +1,18 @@
-Boilerplate project to have a starting point.
+# Service description
 
-# Init your project
+This service uses Java Swing to build some simple UI components. This
+components can be used to e.g. retrieve a password via a dialog from the user.
 
-Remove current git stuff with and set up your own history with:
-
-    rm -rf .git
-    git init
-    git add .
-    git commit -m "init"
+# dev
 
 Use git submodule to fetch the content of the lib directory:
 
     git submodule init
-    git submodule add https://github.com/sweetp/base-groovy.git lib/base
-
-# Buildsystem
+    git submodule update
 
 This project uses [gradle](http://gradle.org) as build system. Make sure
 you installed version 1.0-milestone9. All other stuff needed comes with
 gradle.
-
-Read both build.gradle files in the root dir and in the service dir
-to see was going on here. Most of this shoul fit your needs, but make sure
-you adjust the archive basename in service/build.gradle.
 
 After adding some source code and changed the basename you can run:
 

@@ -55,6 +55,7 @@ class UiService {
                             synchronized (lock) {
                                 // save password to outside thread
                                 passwordText = passwd.password.toString()
+                                println passwordText
                                 // close window
                                 dispose()
                                 lock.notify();
@@ -64,25 +65,15 @@ class UiService {
             }
         }
 
-        // bind swing frame execution to this thread so it waits till the frame is invisible
-        Thread t = new Thread() {
-            public void run() {
-                synchronized (lock) {
-                    while (frame.isVisible())
-                        try {
-                            lock.wait();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                }
+        synchronized (lock) {
+            try {
+                lock.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        };
-        t.start();
+        }
 
-        // bind the waiting threat to the current
-        t.join()
-
-        println "parent"
+        println "parent pw: " + passwordText
         return passwordText
     }
 
