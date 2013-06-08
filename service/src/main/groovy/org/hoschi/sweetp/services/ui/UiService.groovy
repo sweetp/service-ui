@@ -56,7 +56,7 @@ class UiService {
                             synchronized (lock) {
                                 // save password to outside thread
                                 passwordText = passwd.password.toString()
-                                // close window
+                                // notify main thread, we are finished here
                                 lock.notify();
                             }
                         }
@@ -64,13 +64,14 @@ class UiService {
             }
         }
 
+        // add closing listener
         frame.addWindowListener([
                 windowActivated: {},
                 windowClosing: {
-                    // release lock
                     synchronized (lock) {
                         // reset text, closing is like abort
                         passwordText = null;
+                        // release lock, main thread executes now
                         lock.notify();
                     }
                 },
@@ -82,8 +83,11 @@ class UiService {
 
                 }
         ] as WindowListener)
+
+        // show window after setup
         frame.show()
 
+        // wait for UI to finish
         synchronized (lock) {
             try {
                 lock.wait();
@@ -91,6 +95,8 @@ class UiService {
                 e.printStackTrace();
             }
         }
+
+        // close window
         frame.dispose()
 
         return passwordText
