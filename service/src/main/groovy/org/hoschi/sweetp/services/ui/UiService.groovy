@@ -5,6 +5,7 @@ import groovy.swing.SwingBuilder
 import groovy.util.logging.Log4j
 import org.hoschi.sweetp.services.base.ServiceParameter
 
+import java.awt.event.WindowListener
 import javax.swing.JFrame
 
 /**
@@ -45,7 +46,7 @@ class UiService {
         String passwordText = "";
 
         // create frame and show it
-        def frame = swing.frame(title: params.title, defaultCloseOperation: JFrame.EXIT_ON_CLOSE, pack: true, show: true) {
+        JFrame frame = swing.frame(title: params.title, defaultCloseOperation: JFrame.EXIT_ON_CLOSE, pack: true, show: false) {
             vbox {
                 textlabel = label(params.message)
                 passwd = passwordField()
@@ -53,6 +54,7 @@ class UiService {
                         text: 'OK',
                         actionPerformed: {
                             synchronized (lock) {
+                                println "action ok"
                                 // save password to outside thread
                                 passwordText = passwd.password.toString()
                                 println passwordText
@@ -64,6 +66,27 @@ class UiService {
                 )
             }
         }
+
+        frame.addWindowListener([
+                windowActivated: {},
+                windowClosing: {
+                    // release lock
+                    synchronized (lock) {
+                        println "closing"
+                        // reset text, closing is like abort
+                        passwordText = null;
+                        lock.notify();
+                    }
+                },
+                windowDeactivated: {},
+                windowDeiconified: {},
+                windowIconified: {},
+                windowOpened: {},
+                windowClosed: {
+
+                }
+        ] as WindowListener)
+        frame.show()
 
         synchronized (lock) {
             try {
@@ -80,6 +103,7 @@ class UiService {
     // just for testing without sweetp server
     public static void main(String[] args) {
         def ui = new UiService()
-        ui.dialogPassword([title: "foo", message: "message"]);
+        String pw = ui.dialogPassword([title: "foo", message: "message"]);
+        println "pw: $pw"
     }
 }
