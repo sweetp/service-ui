@@ -46,7 +46,7 @@ class UiService {
         String passwordText = "";
 
         // create frame and show it
-        JFrame frame = swing.frame(title: params.title, defaultCloseOperation: JFrame.EXIT_ON_CLOSE, pack: true, show: false) {
+        JFrame frame = swing.frame(title: params.title, defaultCloseOperation: JFrame.HIDE_ON_CLOSE, pack: true, show: false) {
             vbox {
                 textlabel = label(params.message)
                 passwd = passwordField()
@@ -54,12 +54,9 @@ class UiService {
                         text: 'OK',
                         actionPerformed: {
                             synchronized (lock) {
-                                println "action ok"
                                 // save password to outside thread
                                 passwordText = passwd.password.toString()
-                                println passwordText
                                 // close window
-                                dispose()
                                 lock.notify();
                             }
                         }
@@ -72,7 +69,6 @@ class UiService {
                 windowClosing: {
                     // release lock
                     synchronized (lock) {
-                        println "closing"
                         // reset text, closing is like abort
                         passwordText = null;
                         lock.notify();
@@ -95,8 +91,8 @@ class UiService {
                 e.printStackTrace();
             }
         }
+        frame.dispose()
 
-        println "parent pw: " + passwordText
         return passwordText
     }
 
