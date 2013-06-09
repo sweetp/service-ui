@@ -3,6 +3,12 @@
 This service uses Java Swing to build some simple UI components. This
 components can be used to e.g. retrieve a password via a dialog from the user.
 
+*Attention*: This service should be used as a fallback. Normally services are
+called from a Sweetp client. This can be everything, e.g. a CLI tool, a Website
+... This client should get data from the user and pass it as parameters to
+the service. If this isn't possible or usable, use this service to get data
+from the user.
+
 # dev
 
 Use git submodule to fetch the content of the lib directory:
