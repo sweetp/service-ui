@@ -27,9 +27,9 @@ class UiService {
                                 message: ServiceParameter.ONE,
                         ],
                         description: [
-                                summary: "Shows a simple dialog with a title, a message and a password input."
+                                summary: 'Shows a simple dialog with a title, a message and a password input.'
                         ],
-                        returns: "Password the user typed into the dialog input field."
+                        returns: 'Password the user typed into the dialog input field.'
                 ]]
         ])
         config = json.toString()
@@ -37,13 +37,13 @@ class UiService {
 
 
 
-    public String dialogPassword(Map params) {
+    String dialogPassword(Map params) {
         assert params.title
         assert params.message
 
         def swing = new SwingBuilder()
         def lock = new Object()
-        String passwordText = "";
+        String passwordText = '';
 
         // create frame and show it
         JFrame frame = swing.frame(title: params.title, defaultCloseOperation: JFrame.HIDE_ON_CLOSE, pack: true, show: false) {
@@ -57,7 +57,7 @@ class UiService {
                                 // save password to outside thread
                                 passwordText = passwd.password.toString()
                                 // notify main thread, we are finished here
-                                lock.notify();
+                                lock.notifyAll();
                             }
                         }
                 )
@@ -72,7 +72,7 @@ class UiService {
                         // reset text, closing is like abort
                         passwordText = null;
                         // release lock, main thread executes now
-                        lock.notify();
+                        lock.notifyAll();
                     }
                 },
                 windowDeactivated: {},
@@ -89,23 +89,20 @@ class UiService {
 
         // wait for UI to finish
         synchronized (lock) {
-            try {
+            while (frame.isVisible()) {
                 lock.wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
         }
 
         // close window
         frame.dispose()
 
-        return passwordText
+        passwordText
     }
 
     // just for testing without sweetp server
-    public static void main(String[] args) {
-        def ui = new UiService()
-        String pw = ui.dialogPassword([title: "foo", message: "message"]);
-        println "pw: $pw"
+    static void main(String[] args) {
+        UiService ui = new UiService()
+        ui.dialogPassword([title: 'foo', message: 'message']);
     }
 }
