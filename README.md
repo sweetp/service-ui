@@ -1,8 +1,6 @@
 # Service description
 
 
-[![Build Status](https://travis-ci.org/sweetp/service-ui.png)](https://travis-ci.org/sweetp/service-ui)
-
 This service uses Java Swing to build some simple UI components. This
 components can be used to e.g. retrieve a password via a dialog from the user.
 
