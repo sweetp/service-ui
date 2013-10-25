@@ -91,18 +91,20 @@ class UiService {
         synchronized (lock) {
             while (frame.isVisible()) {
                 lock.wait();
+
+                // close window (and visible, so while loop breaks out)
+                frame.dispose()
             }
         }
-
-        // close window
-        frame.dispose()
 
         passwordText
     }
 
     // just for testing without sweetp server
     static void main(String[] args) {
-        UiService ui = new UiService()
+        def ui = new UiService()
         ui.dialogPassword([title: 'foo', message: 'message']);
+        //String pw = ui.dialogPassword([title: 'foo', message: 'message']);
+        //println "pw: $pw"
     }
 }
